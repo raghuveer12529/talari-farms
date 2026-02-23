@@ -9,7 +9,6 @@ async function main() {
         const expenses = await prisma.expense.findMany({
             include: {
                 paidBy: { select: { name: true, email: true } },
-                loan: { include: { splits: { include: { partner: { select: { name: true } } } } } }
             },
             orderBy: { date: 'desc' },
         });
