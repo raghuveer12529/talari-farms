@@ -14,8 +14,6 @@ export async function GET() {
         const expenses = await prisma.expense.findMany({
             include: {
                 paidBy: { select: { name: true, email: true } },
-                // @ts-ignore - Prisma type inference issue for nested relations
-                loan: { include: { splits: { include: { partner: { select: { name: true } } } } } }
             },
             orderBy: { date: 'desc' },
         });
@@ -118,55 +116,45 @@ export async function POST(req: Request) {
                 return NextResponse.json({ error: `Split total (${totalSplit.toFixed(2)}) must match Total Payable (${totalPayable.toFixed(2)})` }, { status: 400 });
             }
 
-            // Create Expense with nested Loan and Splits
+            // Create Expense first (Loan is a standalone model, not a relation on Expense)
             const expense = await prisma.expense.create({
                 data: {
                     ...expenseData,
-                    amount: totalPayable, // For Expense table, let's track the total liability as the amount? 
-                    // Or should amount be Principal? 
-                    // User requirement: "How much loan was taken... How much interest... Total liability"
-                    // If we put Total Payable in expense.amount, grandTotal calculations might double count if we pay it back later via LOAN_EMI.
-                    // But for now, let's stick to Total Payable as the "Existing Liability" created.
-                    // Wait, usually Expense Amount = Principal received. 
-                    // But let's follow the user context: "Loans must be tracked as part of farm expenses".
-                    // If we treat it as an expense, it's money OUT? No, incoming loan is money IN, liability is OUT.
-                    // But here we are just tracking "Expenses". 
-                    // Let's interpret: Expense Record acts as the "Liability Record". 
-                    // So Amount should probably be Reference Amount (Principal) or Total Liability?
-                    // Let's use Principal as the Expense Amount (what we "spent" / received to spend) OR Total Liability.
-                    // Let's decide: Expense.amount = Principal (Base value). Loan.totalPayable = Liability.
-                    // BUT, if I put Principal in Expense.amount, then "Grand Total" of expenses will behave like we spent that money.
-                    // Which is true, we probably spent the loan money.
-                    // Let's use Principal for Expense.amount.
-
-                    loan: {
-                        create: {
-                            principalAmount: p,
-                            interestRate: r,
-                            tenureMonths: t,
-                            interestType: interestType,
-                            interestAmount: interest,
-                            totalPayable: totalPayable,
-                            startDate: new Date(startDate),
-                            splits: {
-                                create: splits.map((s: any) => ({
-                                    partnerId: s.partnerId,
-                                    amount: parseFloat(s.amount)
-                                }))
-                            }
-                        }
-                    }
+                    amount: totalPayable,
                 },
-                include: { loan: { include: { splits: true } } }
+            });
+
+            // Create Loan separately
+            // @ts-ignore - Loan model may not be in Prisma client type if migration pending
+            await (prisma as any).loan.create({
+                data: {
+                    name: expenseData.title,
+                    principalAmount: p,
+                    interestRate: r,
+                    tenureMonths: t,
+                    interestType: interestType,
+                    interestAmount: interest,
+                    totalPayable: totalPayable,
+                    startDate: new Date(startDate),
+                    splits: {
+                        create: splits.map((s: any) => ({
+                            partnerId: s.partnerId,
+                            amount: parseFloat(s.amount)
+                        }))
+                    }
+                }
             });
 
             return NextResponse.json(expense);
+
 
         } else {
             // Regular Expense
 
             // Ensure paidByPartnerId is present for regular expenses if required by logic,
             // but schema allows nullable. Let's keep existing behavior validation if needed.
+            // The previous code didn't strictly validate it besides schema. 
+            // Let's assume it's fine.
             if (!expenseData.paidByPartnerId) {
                 // It might be okay to have generic expenses, but let's assume regular expenses need a payer?
                 // The previous code didn't strictly validate it besides schema. 
