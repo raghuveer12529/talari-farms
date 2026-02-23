@@ -5,8 +5,9 @@ import { sendOrderPackedEmail, sendOrderShippedEmail } from '@/lib/orderEmails';
 
 export async function PATCH(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
+    const { id } = await params;
     const session = await auth();
     if (session?.user?.role !== 'ADMIN') {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -18,7 +19,7 @@ export async function PATCH(
 
         // Get current order to check for duplicate status
         const currentOrder = await prisma.order.findUnique({
-            where: { id: params.id },
+            where: { id },
             include: {
                 items: {
                     include: {
@@ -42,7 +43,7 @@ export async function PATCH(
 
         // Update order status and create history record
         const order = await prisma.order.update({
-            where: { id: params.id },
+            where: { id },
             data: {
                 status,
                 statusHistory: {
