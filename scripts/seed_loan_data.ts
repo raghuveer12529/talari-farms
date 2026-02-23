@@ -40,30 +40,33 @@ async function main() {
             data: {
                 title: "Tractor Loan Test",
                 amount: total, // Liability amount
-                category: 'LOAN',
+                category: 'LOAN_EMI',
                 date: new Date(),
                 notes: "Seed data verification",
-                loan: {
-                    create: {
-                        principalAmount: principal,
-                        interestRate: rate,
-                        tenureMonths: tenure,
-                        interestType: 'SIMPLE',
-                        interestAmount: interest,
-                        totalPayable: total,
-                        startDate: new Date(),
-                        splits: {
-                            create: partners.map(p => ({
-                                partnerId: p.id,
-                                amount: total / 3
-                            }))
-                        }
-                    }
-                }
-            },
-            include: { loan: { include: { splits: true } } }
+            }
         });
         console.log("Created Loan Expense:", expense.id);
+
+        const loan = await prisma.loan.create({
+            data: {
+                name: "Tractor Loan Test",
+                principalAmount: principal,
+                interestRate: rate,
+                tenureMonths: tenure,
+                interestType: 'SIMPLE',
+                interestAmount: interest,
+                totalPayable: total,
+                startDate: new Date(),
+                splits: {
+                    create: partners.map(p => ({
+                        partnerId: p.id,
+                        amount: total / 3
+                    }))
+                }
+            },
+            include: { splits: true }
+        });
+        console.log("Created Loan:", loan.id);
     } catch (e) {
         console.error("Error creating loan:", e);
     }
