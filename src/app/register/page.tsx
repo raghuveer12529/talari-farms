@@ -10,6 +10,7 @@ export default function RegisterPage() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
@@ -20,6 +21,18 @@ export default function RegisterPage() {
         setLoading(true);
         setError('');
         setSuccess('');
+
+        if (password.length < 6) {
+            setError('Password must be at least 6 characters long.');
+            setLoading(false);
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setError('Passwords do not match. Please try again.');
+            setLoading(false);
+            return;
+        }
 
         const formData = new FormData();
         formData.append('name', name);
@@ -101,6 +114,20 @@ export default function RegisterPage() {
                                 placeholder="••••••••"
                                 value={password}
                                 onChange={e => setPassword(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="space-y-3">
+                            <label className="text-[10px] font-bold text-primary/30 uppercase tracking-[0.2em] flex items-center gap-2 px-1">
+                                <Lock size={12} /> Confirm Password
+                            </label>
+                            <input
+                                required
+                                type="password"
+                                className="w-full p-4 bg-white border border-primary/5 rounded-2xl focus:ring-2 focus:ring-primary/10 outline-none transition-all font-medium text-primary placeholder:text-primary/20"
+                                placeholder="••••••••"
+                                value={confirmPassword}
+                                onChange={e => setConfirmPassword(e.target.value)}
                             />
                         </div>
 

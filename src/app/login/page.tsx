@@ -30,7 +30,23 @@ export default function LoginPage() {
                 setError('Invalid email or password. Please try again.');
             } else {
                 router.refresh();
-                router.push('/');
+
+                // Fetch the session to determine the user's role for proper routing
+                const sessionRes = await fetch('/api/auth/session');
+                const session = await sessionRes.json();
+
+                const role = session?.user?.role;
+
+                // Check if we have a specific return URL (e.g. from checkout)
+                const callbackUrl = new URL(window.location.href).searchParams.get('callbackUrl');
+
+                if (callbackUrl) {
+                    router.push(callbackUrl);
+                } else if (role === 'ADMIN' || role === 'PARTNER') {
+                    router.push('/admin');
+                } else {
+                    router.push('/');
+                }
             }
         } catch (err) {
             setError('An error occurred. Please try again.');
@@ -45,7 +61,7 @@ export default function LoginPage() {
             <div className="hidden lg:block lg:w-1/2 relative overflow-hidden bg-primary/5">
                 <Image
                     src="/hero-gac.png"
-                    alt="Talari Farms Organic Field"
+                    alt="Talari Farms natural Field"
                     fill
                     className="object-cover scale-105 hover:scale-100 transition-transform duration-[20s]"
                     priority
@@ -67,21 +83,23 @@ export default function LoginPage() {
                 </div>
             </div>
 
-            {/* Mobile Image Banner (Visible only on mobile/tablet) */}
-            <div className="lg:hidden h-48 w-full relative overflow-hidden">
-                <Image
-                    src="/hero-gac.png"
-                    alt="Talari Farms Harvest"
-                    fill
-                    className="object-cover"
-                    priority
-                />
-                <div className="absolute inset-0 bg-primary/20 backdrop-blur-[1px]" />
-            </div>
+
 
             {/* Form Section (Right on Desktop) */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-24 bg-surface/50">
-                <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+            <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-24 bg-surface/50 relative overflow-hidden">
+                {/* Mobile Background Image (Only visible when lg:hidden) */}
+                <div className="lg:hidden absolute inset-0 z-0">
+                    <Image
+                        src="/hero-gac.png"
+                        alt="Mobile Background"
+                        fill
+                        className="object-cover opacity-[0.15]"
+                        priority
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white" />
+                </div>
+
+                <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700 relative z-10">
 
                     {/* Brand Header */}
                     <div className="text-center space-y-6">
@@ -195,7 +213,7 @@ export default function LoginPage() {
                             <span className="h-px w-12 bg-primary/10" />
                         </div>
                         <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
-                            {['Farm-Direct', '100% Organic', 'Premium Quality'].map((text) => (
+                            {['Farm-Direct', '100% natural', 'Premium Quality'].map((text) => (
                                 <div key={text} className="flex items-center gap-1.5 text-primary/60">
                                     <CheckCircle2 size={13} className="text-secondary" />
                                     <span className="text-xs font-medium tracking-wide">{text}</span>

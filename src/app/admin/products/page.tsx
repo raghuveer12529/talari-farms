@@ -53,9 +53,9 @@ export default function AdminProductsPage() {
 
     return (
         <div className="space-y-8">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-stone-900">Product Management</h1>
+                    <h1 className="text-2xl md:text-3xl font-bold text-stone-900">Product Management</h1>
                     <p className="text-stone-500">Add and manage your farm produce</p>
                 </div>
                 <button
@@ -77,7 +77,7 @@ export default function AdminProductsPage() {
                             <input
                                 required
                                 className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-primary outline-none"
-                                placeholder="e.g. Organic Carrots"
+                                placeholder="e.g. natural Carrots"
                                 value={formData.name}
                                 onChange={e => setFormData({ ...formData, name: e.target.value })}
                             />

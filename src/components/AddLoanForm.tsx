@@ -109,7 +109,7 @@ export default function AddLoanForm() {
                     </select>
                 </div>
 
-                <div className="col-span-2 bg-amber-50 p-4 rounded-xl border border-amber-100 flex justify-between items-center">
+                <div className="col-span-2 bg-amber-50 p-4 rounded-xl border border-amber-100 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                     <div>
                         <span className="text-xs font-bold text-amber-700 uppercase block">Estimated Total Payable</span>
                         <span className="text-2xl font-bold text-amber-900">₹{payable.toFixed(2)}</span>

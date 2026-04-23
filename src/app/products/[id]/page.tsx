@@ -50,7 +50,7 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
                         <div className="flex flex-wrap gap-6 pt-8 border-t border-primary/5">
                             <div className="flex items-center gap-2 text-primary/40">
                                 <Leaf size={18} className="text-secondary" />
-                                <span className="text-[10px] font-bold uppercase tracking-widest">Organic Certified</span>
+                                <span className="text-[10px] font-bold uppercase tracking-widest">natural Certified</span>
                             </div>
                             <div className="flex items-center gap-2 text-primary/40">
                                 <Truck size={18} className="text-secondary" />

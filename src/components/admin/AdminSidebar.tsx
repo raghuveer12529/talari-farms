@@ -12,7 +12,7 @@ import {
     Users2,
     Menu,
     X,
-    LogOut
+    ChevronRight
 } from 'lucide-react';
 
 type NavItem = {
@@ -27,11 +27,10 @@ type Props = {
 };
 
 export default function AdminSidebar({ role }: Props) {
-    const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
 
     const navItems: NavItem[] = [
-        { label: 'Overview', href: '/admin', icon: LayoutDashboard, roles: ['ADMIN', 'PARTNER'] },
+        { label: 'Dashboard', href: '/admin', icon: LayoutDashboard, roles: ['ADMIN', 'PARTNER'] },
         { label: 'Users', href: '/admin/users', icon: UserIcon, roles: ['ADMIN'] },
         { label: 'Partners', href: '/admin/partners', icon: Users2, roles: ['ADMIN'] },
         { label: 'Expenses', href: '/admin/expenses', icon: IndianRupee, roles: ['ADMIN', 'PARTNER'] },
@@ -40,45 +39,26 @@ export default function AdminSidebar({ role }: Props) {
     ];
 
     const filteredItems = navItems.filter(item => !role || item.roles.includes(role));
+    const currentPage = filteredItems.find(item => item.href === pathname);
 
     return (
         <>
-            {/* Mobile Header */}
-            <div className="md:hidden bg-white border-b border-stone-200 p-4 flex justify-between items-center sticky top-0 z-20">
-                <span className="font-bold text-lg text-primary">Farm Admin</span>
-                <button
-                    onClick={() => setIsOpen(true)}
-                    className="p-2 hover:bg-stone-50 rounded-lg text-stone-600"
-                >
-                    <Menu size={24} />
-                </button>
+            {/* Mobile: Breadcrumb only (no hamburger — main Navbar handles that) */}
+            <div className="md:hidden bg-stone-50 border-b border-stone-200/60 px-4 py-2.5 flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400">Admin</span>
+                {currentPage && (
+                    <>
+                        <ChevronRight size={10} className="text-stone-300" />
+                        <span className="text-xs font-bold text-primary">{currentPage.label}</span>
+                    </>
+                )}
             </div>
 
-            {/* Mobile Overlay */}
-            {isOpen && (
-                <div
-                    className="fixed inset-0 bg-black/50 z-30 md:hidden backdrop-blur-sm"
-                    onClick={() => setIsOpen(false)}
-                />
-            )}
-
-            {/* Sidebar */}
-            <aside className={`
-                fixed md:sticky top-0 left-0 h-screen w-64 bg-white border-r border-stone-200 
-                p-6 z-40 transition-transform duration-300 ease-in-out
-                ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-            `}>
-                <div className="flex justify-between items-center mb-8">
-                    <div className="flex flex-col">
-                        <span className="font-bold text-xl text-primary">Talari Farms</span>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600">Admin Portal</span>
-                    </div>
-                    <button
-                        onClick={() => setIsOpen(false)}
-                        className="md:hidden p-2 hover:bg-stone-50 rounded-lg text-stone-400"
-                    >
-                        <X size={20} />
-                    </button>
+            {/* Desktop: Sticky sidebar */}
+            <aside className="hidden md:block sticky top-0 h-screen w-64 bg-white border-r border-stone-200 p-6 shrink-0">
+                <div className="flex flex-col mb-8">
+                    <span className="font-bold text-xl text-primary">Talari Farms</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600">Admin Portal</span>
                 </div>
 
                 <nav className="space-y-1">
@@ -88,7 +68,6 @@ export default function AdminSidebar({ role }: Props) {
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                onClick={() => setIsOpen(false)}
                                 className={`
                                     flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm
                                     ${isActive
@@ -104,13 +83,7 @@ export default function AdminSidebar({ role }: Props) {
                 </nav>
 
                 <div className="absolute bottom-6 left-6 right-6">
-                    <form action={async () => {
-                        // In a real app we'd call signOut() here, but for now just redirect or let generic auth handle it
-                        // For client component, we rely on standard auth flow. 
-                        // Since we are inside layout, we can just show a button or link.
-                    }}>
-                        <div className="text-xs text-stone-400 text-center mb-2">Logged in as {role}</div>
-                    </form>
+                    <div className="text-xs text-stone-400 text-center mb-2">Logged in as {role}</div>
                 </div>
             </aside>
         </>

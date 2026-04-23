@@ -11,8 +11,14 @@ const ebGaramond = EB_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Talari Farms | Premium Organic Harvest",
-  description: "Experience the pure taste of nature. Organic, premium produce delivered directly from Talari Farms.",
+  title: "Talari Farms | Premium natural Harvest",
+  description: "Experience the pure taste of nature. natural, premium produce delivered directly from Talari Farms.",
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({

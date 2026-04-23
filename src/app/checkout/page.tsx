@@ -11,6 +11,8 @@ export default function CheckoutPage() {
     const [loading, setLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
 
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
     const [formData, setFormData] = useState({
         customerName: '',
         customerEmail: '',
@@ -32,6 +34,7 @@ export default function CheckoutPage() {
             .then(res => res.json())
             .then(session => {
                 if (session?.user) {
+                    setIsLoggedIn(true);
                     setFormData(prev => ({
                         ...prev,
                         customerName: session.user.name || '',
@@ -104,6 +107,14 @@ export default function CheckoutPage() {
                     <header className="space-y-4">
                         <span className="text-secondary font-bold tracking-[0.2em] uppercase text-[10px]">Step 2 of 2</span>
                         <h1 className="heading-section text-primary">Delivery Details</h1>
+                        {!isLoggedIn && (
+                            <div className="bg-primary/5 p-4 rounded-xl border border-primary/10 flex items-center justify-between animate-in fade-in">
+                                <span className="text-sm font-medium text-primary/70">Already part of our family?</span>
+                                <a href="/login?callbackUrl=/checkout" className="text-sm font-bold text-secondary hover:text-secondary/80 transition-colors bg-white px-4 py-2 rounded-lg border border-primary/5 shadow-sm">
+                                    Sign In
+                                </a>
+                            </div>
+                        )}
                     </header>
 
                     <form onSubmit={handleSubmit} className="space-y-8">

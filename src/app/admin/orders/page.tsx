@@ -56,7 +56,7 @@ export default function AdminOrdersPage() {
     return (
         <div className="space-y-8">
             <div>
-                <h1 className="text-3xl font-bold text-stone-900">Order Management</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-stone-900">Order Management</h1>
                 <p className="text-stone-500">View and update customer orders</p>
             </div>
 
@@ -76,7 +76,7 @@ export default function AdminOrdersPage() {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-4">
+                                <div className="flex flex-wrap items-center gap-3">
                                     <div className="text-right mr-4">
                                         <p className="text-xs font-medium text-stone-500 uppercase tracking-wider">Total</p>
                                         <p className="text-lg font-bold text-stone-900">₹{order.total.toLocaleString()}</p>

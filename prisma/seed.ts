@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  const password = await bcrypt.hash('password123', 10);
+  const password = await bcrypt.hash('password@123', 10);
 
   // Create Admin
   await prisma.user.upsert({
@@ -44,7 +44,7 @@ async function main() {
   const products = [
     {
       name: 'Tomatoes',
-      description: 'Sun-ripened organic tomatoes, bursting with flavor. Ideal for salads and sauces.',
+      description: 'Sun-ripened natural tomatoes, bursting with flavor. Ideal for salads and sauces.',
       price: 60,
       quantity: 100,
       category: 'Vegetables',
@@ -60,7 +60,7 @@ async function main() {
     },
     {
       name: 'Broccoli',
-      description: 'Crisp, farm-fresh organic broccoli crowns, rich in antioxidants and vitamins.',
+      description: 'Crisp, farm-fresh natural broccoli crowns, rich in antioxidants and vitamins.',
       price: 120,
       quantity: 60,
       category: 'Vegetables',
@@ -76,7 +76,7 @@ async function main() {
     },
     {
       name: 'GAC Fruit',
-      description: 'The "Fruit from Heaven", known for its high nutritional value and vibrant orange hue. Grown organically at Talari Farms.',
+      description: 'The "Fruit from Heaven", known for its high nutritional value and vibrant orange hue. Grown naturalally at Talari Farms.',
       price: 450,
       quantity: 15,
       category: 'Exotic Fruits',
