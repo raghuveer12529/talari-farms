@@ -44,7 +44,7 @@ export async function submitContactForm(
 
     try {
         await resend.emails.send({
-            from: 'Talari Farms <onboarding@resend.dev>',
+            from: 'Talari Farms <noreply@talarifarms.co.in>',
             to: 'raghu.veer12529@gmail.com',
             subject: `New Inquiry from ${name} — ${requirement}`,
             html: `
