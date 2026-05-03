@@ -296,7 +296,7 @@ function ProductShowcase() {
                             'Zero additives or preservatives',
                             'Private-label ready',
                         ]}
-                        image="/product-juice.jpg"
+                        image="/product-juice.png"
                     />
                     <GacProductCard
                         category="NUTRACEUTICALS & SUPPLEMENTS"
@@ -744,7 +744,7 @@ const jsonLd = {
             description:
                 'Cold-pressed Gac fruit juice rich in lycopene and beta-carotene. Bulk supply available for beverage and nutraceutical brands.',
             brand: { '@type': 'Brand', name: 'Talari Farms' },
-            image: 'https://www.talarifarms.co.in/product-juice.jpg',
+            image: 'https://www.talarifarms.co.in/product-juice.png',
             offers: {
                 '@type': 'Offer',
                 availability: 'https://schema.org/InStock',
