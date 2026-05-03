@@ -32,7 +32,8 @@
       "Bash(magick /Users/rtalari/Desktop/talari-farms/public/logo-lovable.png -resize 180x180 /Users/rtalari/Desktop/talari-farms/public/apple-touch-icon.png)",
       "Bash(magick /Users/rtalari/Desktop/talari-farms/public/logo-lovable.png -resize 192x192 /Users/rtalari/Desktop/talari-farms/public/icon-192.png)",
       "Bash(git -C /Users/rtalari/Desktop/talari-farms remote -v)",
-      "Bash(npm uninstall *)"
+      "Bash(npm uninstall *)",
+      "Bash(git *)"
     ]
   }
 }
