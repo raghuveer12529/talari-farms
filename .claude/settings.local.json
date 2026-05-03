@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "WebFetch(domain:talari-farms.lovable.app)",
+      "Bash(curl -s \"https://talari-farms.lovable.app/\")",
+      "Bash(curl -s \"https://talari-farms.lovable.app/assets/index-BUZ4DfHI.js\")",
+      "Bash(curl -s \"https://talari-farms.lovable.app/assets/index-BzA0ptXr.css\")",
+      "Bash(grep -oP '\"[^\"]{20,500}\"')",
+      "Bash(grep -oP '\"[^\"]{30,600}\"')",
+      "Bash(grep -oP '\"[^\"]{20,400}\"')",
+      "Bash(grep -v \"^\\\\\"[A-Z].*[A-Z]\\\\\"$\\\\|^\\\\\"[a-z][a-z-]*\\\\\"$\")",
+      "Bash(grep -oP ':[^{;]+\\\\{[^}]{5,200}\\\\}')",
+      "Bash(curl -s \"https://talari-farms.lovable.app/assets/product-fruit-h4_Kgtld.jpg\" -o /Users/rtalari/Desktop/talari-farms/public/product-fruit.jpg)",
+      "Bash(curl -s \"https://talari-farms.lovable.app/assets/product-juice-B31DZ__d.jpg\" -o /Users/rtalari/Desktop/talari-farms/public/product-juice.jpg)",
+      "Bash(curl -s \"https://talari-farms.lovable.app/assets/product-powder-CdtId6oo.jpg\" -o /Users/rtalari/Desktop/talari-farms/public/product-powder.jpg)",
+      "Bash(curl -s \"https://talari-farms.lovable.app/assets/farm-D_vb2m7J.jpg\" -o /Users/rtalari/Desktop/talari-farms/public/farm.jpg)",
+      "Bash(curl -s \"https://talari-farms.lovable.app/assets/hero-gac-CIpnjoej.jpg\" -o /Users/rtalari/Desktop/talari-farms/public/hero-gac-lovable.jpg)",
+      "Bash(curl -s \"https://talari-farms.lovable.app/assets/logo-D0c67-Lx.png\" -o /Users/rtalari/Desktop/talari-farms/public/logo-lovable.png)",
+      "Bash(grep -oP '\"[^\"]{15,500}\"')",
+      "Bash(grep -v \"^\\\\\"[a-z][a-z-]*\\\\\"$\\\\|^\\\\\"[A-Z][A-Z]*\\\\\"$\")",
+      "Bash(grep -E \"\\\\\"[A-Za-z ].{10,}\")",
+      "Bash(grep -oP '\"[^\"]{10,200}\"')",
+      "Bash(npm run *)",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(npm install *)",
+      "Bash(npm list *)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(convert --version)",
+      "Bash(magick /Users/rtalari/Desktop/talari-farms/public/logo-lovable.png -resize 32x32 /Users/rtalari/Desktop/talari-farms/public/favicon.ico)",
+      "Bash(magick /Users/rtalari/Desktop/talari-farms/public/logo-lovable.png -resize 180x180 /Users/rtalari/Desktop/talari-farms/public/apple-touch-icon.png)",
+      "Bash(magick /Users/rtalari/Desktop/talari-farms/public/logo-lovable.png -resize 192x192 /Users/rtalari/Desktop/talari-farms/public/icon-192.png)",
+      "Bash(git -C /Users/rtalari/Desktop/talari-farms remote -v)",
+      "Bash(npm uninstall *)"
+    ]
+  }
+}

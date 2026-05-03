@@ -1,69 +1,219 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────
+   Tailwind v4 theme tokens
+───────────────────────────────────────────── */
 @theme {
-  --color-primary: #354f52;
-  /* Dark Slate Gray - Premium & natural */
-  --color-primary-light: #52796f;
-  --color-secondary: #daa520;
-  /* Goldenrod - Premium Highlight */
-  --color-accent: #84a59d;
-  --color-background-farm: #ffffff;
-  --color-surface: #f8f9fa;
+  /* Fonts */
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-poppins), system-ui, sans-serif;
+
+  /* Color tokens (HSL-channel form so Tailwind opacity modifiers work) */
+  --color-background: hsl(36 38% 97%);
+  --color-foreground: hsl(14 35% 14%);
+
+  --color-primary: hsl(8 78% 48%);
+  --color-primary-foreground: hsl(36 38% 97%);
+  --color-primary-glow: hsl(18 92% 60%);
+
+  --color-secondary: hsl(24 95% 92%);
+  --color-secondary-foreground: hsl(14 50% 20%);
+
+  --color-muted: hsl(30 25% 94%);
+  --color-muted-foreground: hsl(20 15% 40%);
+
+  --color-accent: hsl(18 92% 60%);
+
+  --color-border: hsl(24 30% 88%);
+  --color-input: hsl(24 30% 90%);
+
+  /* Border-radius */
+  --radius: 1rem;
 }
 
+/* ─────────────────────────────────────────────
+   CSS custom properties (HSL channels)
+───────────────────────────────────────────── */
 :root {
-  --background: var(--color-background-farm);
-  --foreground: #1a1a1a;
-  --nav-height: 4rem;
+  --background: 36 38% 97%;
+  --foreground: 14 35% 14%;
+
+  --primary: 8 78% 48%;
+  --primary-foreground: 36 38% 97%;
+  --primary-glow: 18 92% 60%;
+
+  --secondary: 24 95% 92%;
+  --secondary-foreground: 14 50% 20%;
+
+  --muted: 30 25% 94%;
+  --muted-foreground: 20 15% 40%;
+
+  --border: 24 30% 88%;
+  --input: 24 30% 90%;
+
+  --accent: 18 92% 60%;
+
+  /* Gradients */
+  --gradient-hero: linear-gradient(135deg, hsl(8 78% 48%) 0%, hsl(18 92% 58%) 50%, hsl(28 95% 62%) 100%);
+  --gradient-warm: linear-gradient(180deg, hsl(36 50% 98%) 0%, hsl(28 60% 95%) 100%);
+  --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / .85), hsl(36 50% 98% / .6));
+  --gradient-glow: radial-gradient(circle at 30% 20%, hsl(18 92% 60% / .18), transparent 60%);
+
+  /* Shadows */
+  --shadow-soft: 0 4px 20px -6px hsl(8 60% 30% / .08);
+  --shadow-elegant: 0 20px 60px -20px hsl(8 78% 40% / .25);
+  --shadow-glow: 0 0 50px hsl(18 92% 60% / .35);
+  --shadow-card: 0 10px 40px -12px hsl(14 40% 20% / .12);
+
+  /* Glass */
+  --glass-bg: hsl(0 0% 100% / .65);
+  --glass-border: hsl(0 0% 100% / .5);
+
+  --transition-smooth: cubic-bezier(.4, 0, .2, 1);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* ─────────────────────────────────────────────
+   Base
+───────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
 }
 
-.glass {
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-}
-
-.apple-section {
-  padding-top: 6rem;
-  padding-bottom: 6rem;
-  overflow: hidden;
-}
-
-@media (max-width: 768px) {
-  .apple-section {
-    padding-top: 4rem;
-    padding-bottom: 4rem;
+@layer base {
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-inter), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-.font-serif {
-  font-family: var(--font-eb-garamond), serif;
+/* ─────────────────────────────────────────────
+   Component classes
+───────────────────────────────────────────── */
+@layer components {
+  /* Glassmorphism */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+  }
+
+  /* Gradient card */
+  .glass-card {
+    background-image: var(--gradient-card);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid hsl(var(--border) / .6);
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    background-image: var(--gradient-hero);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* Section spacing */
+  .section-padding {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+
+  @media (min-width: 768px) {
+    .section-padding {
+      padding-top: 7rem;
+      padding-bottom: 7rem;
+    }
+  }
+
+  /* Container horizontal padding */
+  .container-px {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .container-px {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-px {
+      padding-left: 3rem;
+      padding-right: 3rem;
+    }
+  }
+
+  /* Scroll-reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(2rem);
+    transition: opacity 0.7s var(--transition-smooth), transform 0.7s var(--transition-smooth);
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.btn-apple {
-  @apply px-8 py-3 rounded-full font-medium transition-all duration-500 active:scale-[0.98] text-sm tracking-tight;
+/* ─────────────────────────────────────────────
+   Custom utility classes
+───────────────────────────────────────────── */
+@utility shadow-soft {
+  box-shadow: var(--shadow-soft);
 }
 
-.btn-apple-primary {
-  @apply bg-white text-primary hover:bg-white/95 shadow-lg hover:shadow-xl;
+@utility shadow-elegant {
+  box-shadow: var(--shadow-elegant);
 }
 
-.btn-apple-secondary {
-  @apply bg-white/10 text-white backdrop-blur-xl border border-white/20 hover:bg-white/20;
+@utility shadow-glow {
+  box-shadow: var(--shadow-glow);
 }
 
-.heading-hero {
-  @apply text-6xl md:text-8xl font-medium tracking-tight leading-[1.05] font-serif;
+@utility shadow-card-premium {
+  box-shadow: var(--shadow-card);
 }
 
-.heading-section {
-  @apply text-4xl md:text-6xl font-bold tracking-tight;
+@utility bg-gradient-warm {
+  background-image: var(--gradient-warm);
+  background-color: hsl(36 50% 98%);
+}
+
+@utility bg-gradient-glow {
+  background-image: var(--gradient-glow);
+}
+
+@utility bg-gradient-hero {
+  background-image: var(--gradient-hero);
+}
+
+@utility animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@utility animate-float-delayed {
+  animation: float 7s ease-in-out infinite reverse;
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+}
+
+/* ─────────────────────────────────────────────
+   Keyframes
+───────────────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
 }
