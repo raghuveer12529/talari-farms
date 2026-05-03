@@ -273,7 +273,7 @@ function ProductShowcase() {
                 </div>
 
                 {/* Cards */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7 reveal">
+                <div className="grid md:grid-cols-2 gap-7 reveal">
                     <GacProductCard
                         category="EXPORTERS & PROCESSORS"
                         title="Gac Fruit"
@@ -309,6 +309,18 @@ function ProductShowcase() {
                             'Custom mesh sizing',
                         ]}
                         image="/product-powder.jpg"
+                    />
+                    <GacProductCard
+                        category="COSMETICS & WELLNESS"
+                        title="Gac Fruit Oil"
+                        badge="Cold-Extracted • Pure"
+                        description="Cold-extracted from Gac seeds, our oil is one of nature's richest sources of tocotrienols and carotenoids — ideal for premium cosmetics and wellness formulations."
+                        features={[
+                            'Highest natural beta-carotene content',
+                            'Cold-extracted, no solvents',
+                            'Cosmetic & food grade available',
+                        ]}
+                        image="/product-oil.jpg"
                     />
                 </div>
             </div>
@@ -575,6 +587,7 @@ function Contact() {
                                         <option value="Gac Fruit (Fresh / Whole)">Gac Fruit (Fresh / Whole)</option>
                                         <option value="Gac Fruit Juice (Cold-Pressed)">Gac Fruit Juice (Cold-Pressed)</option>
                                         <option value="Gac Fruit Powder">Gac Fruit Powder</option>
+                                        <option value="Gac Fruit Oil (Cold-Extracted)">Gac Fruit Oil (Cold-Extracted)</option>
                                         <option value="Multiple / Mixed Products">Multiple / Mixed Products</option>
                                     </select>
                                 </div>
@@ -746,6 +759,20 @@ const jsonLd = {
                 'Spray-dried Gac fruit powder with concentrated carotenoids. Ideal for supplements, functional foods and cosmetics. Export-ready.',
             brand: { '@type': 'Brand', name: 'Talari Farms' },
             image: 'https://www.talarifarms.co.in/product-powder.jpg',
+            offers: {
+                '@type': 'Offer',
+                availability: 'https://schema.org/InStock',
+                priceCurrency: 'INR',
+                seller: { '@type': 'Organization', name: 'Talari Farms' },
+            },
+        },
+        {
+            '@type': 'Product',
+            name: 'Gac Fruit Oil',
+            description:
+                'Cold-extracted Gac seed oil — one of nature\'s richest sources of tocotrienols and carotenoids. Available in cosmetic and food grade for premium wellness formulations.',
+            brand: { '@type': 'Brand', name: 'Talari Farms' },
+            image: 'https://www.talarifarms.co.in/product-oil.jpg',
             offers: {
                 '@type': 'Offer',
                 availability: 'https://schema.org/InStock',

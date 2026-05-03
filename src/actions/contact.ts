@@ -11,6 +11,7 @@ const REQUIREMENT_OPTIONS = [
     'Gac Fruit (Fresh / Whole)',
     'Gac Fruit Juice (Cold-Pressed)',
     'Gac Fruit Powder',
+    'Gac Fruit Oil (Cold-Extracted)',
     'Multiple / Mixed Products',
 ] as const;
 
