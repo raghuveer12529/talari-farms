@@ -1,0 +1,346 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  SALES
+  ACCOUNTS
+  INVENTORY
+  VIEWER
+  PARTNER
+}
+
+enum EntryType {
+  INCOME
+  EXPENDITURE
+}
+
+enum FundSource {
+  OWN_POCKET
+  LOAN_FUNDS
+}
+
+enum StockMovementType {
+  IN
+  OUT
+  ADJUST
+  RESERVE
+  RELEASE
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PARTIAL
+  PAID
+  CANCELLED
+}
+
+enum PaymentMode {
+  UPI
+  BANK_TRANSFER
+  CASH
+  CHEQUE
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(PARTNER)
+  createdAt    DateTime @default(now())
+
+  ledgerEntries  LedgerEntry[]
+  loanRepayments LoanRepayment[]
+
+  invoices Invoice[]
+  payments Payment[]
+
+  accounts Account[]
+  sessions Session[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Loan {
+  id          String   @id @default(cuid())
+  amount      Float
+  source      String
+  description String?
+  date        DateTime
+  notes       String?
+  createdAt   DateTime @default(now())
+
+  repayments LoanRepayment[]
+}
+
+model LoanRepayment {
+  id        String   @id @default(cuid())
+  loanId    String
+  amount    Float
+  date      DateTime
+  notes     String?
+  paidById  String
+  createdAt DateTime @default(now())
+
+  loan   Loan @relation(fields: [loanId], references: [id], onDelete: Cascade)
+  paidBy User @relation(fields: [paidById], references: [id])
+}
+
+model LedgerEntry {
+  id          String      @id @default(cuid())
+  type        EntryType
+  amount      Float
+  category    String
+  date        DateTime
+  source      FundSource?
+  notes       String?
+  receiptUrl  String?
+  partnerId   String
+  createdAt   DateTime    @default(now())
+
+  partner User @relation(fields: [partnerId], references: [id])
+}
+
+// ───────────────────────────── ERP ─────────────────────────────
+
+model Customer {
+  id              String   @id @default(cuid())
+  companyName     String
+  contactPerson   String?
+  gstin           String?
+  pan             String?
+  email           String?
+  phone           String?
+  billingAddress  String?
+  shippingAddress String?
+  industry        String?
+  website         String?
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  invoices Invoice[]
+  payments Payment[]
+
+  @@index([companyName])
+}
+
+model Product {
+  id                String   @id @default(cuid())
+  sku               String   @unique
+  hsnCode           String
+  name              String
+  description       String?
+  category          String
+  unit              String   @default("kg")
+  gstRate           Float    @default(0)
+  price             Decimal  @default(0) @db.Decimal(12, 2)
+  costPrice         Decimal  @default(0) @db.Decimal(12, 2)
+  images            String[]
+  coaUrl            String?
+  storageConditions String?
+  countryOfOrigin   String?  @default("India")
+  lowStockThreshold Float    @default(0)
+  active            Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  batches        Batch[]
+  stockMovements StockMovement[]
+  invoiceItems   InvoiceItem[]
+
+  @@index([name])
+}
+
+model Batch {
+  id                String    @id @default(cuid())
+  productId         String
+  batchNumber       String
+  manufacturingDate DateTime?
+  expiryDate        DateTime?
+  quantity          Float     @default(0)
+  coaUrl            String?
+  createdAt         DateTime  @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+model StockMovement {
+  id        String            @id @default(cuid())
+  productId String
+  batchId   String?
+  type      StockMovementType
+  quantity  Float
+  reason    String?
+  refType   String?
+  refId     String?
+  createdAt DateTime          @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  number        String        @unique
+  date          DateTime      @default(now())
+  dueDate       DateTime?
+  customerId    String
+  billTo        Json
+  shipTo        Json?
+  status        InvoiceStatus @default(DRAFT)
+  isInterState  Boolean       @default(false)
+  placeOfSupply String?
+  subtotal      Decimal       @default(0) @db.Decimal(12, 2)
+  discountTotal Decimal       @default(0) @db.Decimal(12, 2)
+  taxableValue  Decimal       @default(0) @db.Decimal(12, 2)
+  cgst          Decimal       @default(0) @db.Decimal(12, 2)
+  sgst          Decimal       @default(0) @db.Decimal(12, 2)
+  igst          Decimal       @default(0) @db.Decimal(12, 2)
+  grandTotal    Decimal       @default(0) @db.Decimal(12, 2)
+  amountInWords String        @default("")
+  notes         String?
+  terms         String?
+  createdById   String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  customer  Customer      @relation(fields: [customerId], references: [id])
+  createdBy User          @relation(fields: [createdById], references: [id])
+  items     InvoiceItem[]
+  payments  Payment[]
+
+  @@index([customerId])
+  @@index([status])
+}
+
+model InvoiceItem {
+  id           String  @id @default(cuid())
+  invoiceId    String
+  productId    String?
+  description  String
+  hsnCode      String?
+  quantity     Float   @default(1)
+  unit         String  @default("kg")
+  rate         Decimal @default(0) @db.Decimal(12, 2)
+  discount     Float   @default(0)
+  gstRate      Float   @default(0)
+  taxableValue Decimal @default(0) @db.Decimal(12, 2)
+  cgst         Decimal @default(0) @db.Decimal(12, 2)
+  sgst         Decimal @default(0) @db.Decimal(12, 2)
+  igst         Decimal @default(0) @db.Decimal(12, 2)
+  amount       Decimal @default(0) @db.Decimal(12, 2)
+
+  invoice Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id])
+
+  @@index([invoiceId])
+}
+
+model Payment {
+  id          String      @id @default(cuid())
+  receiptNo   String      @unique
+  invoiceId   String?
+  customerId  String
+  amount      Decimal     @db.Decimal(12, 2)
+  date        DateTime    @default(now())
+  mode        PaymentMode @default(BANK_TRANSFER)
+  reference   String?
+  notes       String?
+  createdById String
+  createdAt   DateTime    @default(now())
+
+  invoice   Invoice?  @relation(fields: [invoiceId], references: [id])
+  customer  Customer  @relation(fields: [customerId], references: [id])
+  createdBy User      @relation(fields: [createdById], references: [id])
+
+  @@index([customerId])
+  @@index([invoiceId])
+}
+
+model CompanySettings {
+  id              String   @id @default("default")
+  companyName     String   @default("Talari Farms")
+  address         String?
+  gstin           String?
+  pan             String?
+  stateCode       String?
+  email           String?
+  phone           String?
+  bankName        String?
+  bankAccountName String?
+  bankAccountNo   String?
+  bankIfsc        String?
+  logoUrl         String?
+  invoicePrefix   String   @default("TF")
+  quotationPrefix String   @default("QT")
+  defaultTerms    String?
+  updatedAt       DateTime @updatedAt
+}
+
+model Counter {
+  id    String @id
+  value Int    @default(0)
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  userName  String
+  userRole  String?
+  action    String // e.g. "invoice.create"
+  entity    String // e.g. "Invoice"
+  entityId  String?
+  summary   String
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([entity])
+}

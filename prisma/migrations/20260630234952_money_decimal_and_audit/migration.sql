@@ -1,0 +1,46 @@
+-- AlterTable
+ALTER TABLE "Invoice" ALTER COLUMN "subtotal" SET DATA TYPE DECIMAL(12,2),
+ALTER COLUMN "discountTotal" SET DATA TYPE DECIMAL(12,2),
+ALTER COLUMN "taxableValue" SET DATA TYPE DECIMAL(12,2),
+ALTER COLUMN "cgst" SET DATA TYPE DECIMAL(12,2),
+ALTER COLUMN "sgst" SET DATA TYPE DECIMAL(12,2),
+ALTER COLUMN "igst" SET DATA TYPE DECIMAL(12,2),
+ALTER COLUMN "grandTotal" SET DATA TYPE DECIMAL(12,2);
+
+-- AlterTable
+ALTER TABLE "InvoiceItem" ALTER COLUMN "rate" SET DATA TYPE DECIMAL(12,2),
+ALTER COLUMN "taxableValue" SET DATA TYPE DECIMAL(12,2),
+ALTER COLUMN "cgst" SET DATA TYPE DECIMAL(12,2),
+ALTER COLUMN "sgst" SET DATA TYPE DECIMAL(12,2),
+ALTER COLUMN "igst" SET DATA TYPE DECIMAL(12,2),
+ALTER COLUMN "amount" SET DATA TYPE DECIMAL(12,2);
+
+-- AlterTable
+ALTER TABLE "Payment" ALTER COLUMN "amount" SET DATA TYPE DECIMAL(12,2);
+
+-- AlterTable
+ALTER TABLE "Product" ALTER COLUMN "price" SET DATA TYPE DECIMAL(12,2),
+ALTER COLUMN "costPrice" SET DATA TYPE DECIMAL(12,2);
+
+-- CreateTable
+CREATE TABLE "AuditLog" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT,
+    "userName" TEXT NOT NULL,
+    "userRole" TEXT,
+    "action" TEXT NOT NULL,
+    "entity" TEXT NOT NULL,
+    "entityId" TEXT,
+    "summary" TEXT NOT NULL,
+    "metadata" JSONB,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "AuditLog_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE INDEX "AuditLog_createdAt_idx" ON "AuditLog"("createdAt");
+
+-- CreateIndex
+CREATE INDEX "AuditLog_entity_idx" ON "AuditLog"("entity");
+

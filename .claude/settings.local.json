@@ -34,7 +34,18 @@
       "Bash(git -C /Users/rtalari/Desktop/talari-farms remote -v)",
       "Bash(npm uninstall *)",
       "Bash(git *)",
-      "Bash(curl -s https://www.talarifarms.co.in/sitemap.xml)"
+      "Bash(curl -s https://www.talarifarms.co.in/sitemap.xml)",
+      "Bash(~/.nvm/versions/node/v20.20.0/bin/npm install *)",
+      "Bash(mkdir -p /Users/rtalari/Desktop/talari-farms/prisma)",
+      "Bash(mkdir -p /Users/rtalari/Desktop/talari-farms/src/lib)",
+      "Bash(mkdir -p /Users/rtalari/Desktop/talari-farms/src/actions)",
+      "Bash(mkdir -p /Users/rtalari/Desktop/talari-farms/src/types)",
+      "Bash(mkdir -p /Users/rtalari/Desktop/talari-farms/src/components/ledger)",
+      "Bash(~/.nvm/versions/node/v20.20.0/bin/npx prisma *)",
+      "Bash(~/.nvm/versions/node/v20.20.0/bin/npx ts-node *)",
+      "Bash(~/.nvm/versions/node/v20.20.0/bin/npx tsc *)",
+      "Bash(~/.nvm/versions/node/v20.20.0/bin/npm run *)",
+      "WebSearch"
     ]
   }
 }

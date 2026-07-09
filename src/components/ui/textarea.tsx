@@ -1,0 +1,17 @@
+import * as React from 'react';
+import { cn } from '@/lib/utils';
+import { inputClasses } from './input';
+
+const Textarea = React.forwardRef<
+  HTMLTextAreaElement,
+  React.TextareaHTMLAttributes<HTMLTextAreaElement>
+>(({ className, ...props }, ref) => (
+  <textarea
+    ref={ref}
+    className={cn(inputClasses, 'h-auto min-h-[80px] py-2', className)}
+    {...props}
+  />
+));
+Textarea.displayName = 'Textarea';
+
+export { Textarea };

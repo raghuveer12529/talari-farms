@@ -217,3 +217,130 @@ html {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-12px); }
 }
+
+/* ─────────────────────────────────────────────
+   ERP theme — scoped under .erp (green, dark-mode capable)
+   Overrides the Tailwind v4 --color-* variables and the HSL-channel
+   custom properties so ERP utilities render green, while the marketing
+   site and ledger keep their warm palette untouched.
+───────────────────────────────────────────── */
+.erp {
+  /* Tailwind utility color variables */
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(150 12% 12%);
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(150 12% 12%);
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(150 12% 12%);
+
+  --color-primary: hsl(123 55% 24%);          /* #1B5E20 */
+  --color-primary-foreground: hsl(0 0% 100%);
+  --color-primary-glow: hsl(123 45% 40%);
+
+  --color-secondary: hsl(123 40% 94%);        /* light green */
+  --color-secondary-foreground: hsl(123 48% 22%);
+
+  --color-muted: hsl(150 16% 96%);
+  --color-muted-foreground: hsl(150 8% 42%);
+
+  --color-accent: hsl(142 55% 42%);
+  --color-accent-foreground: hsl(0 0% 100%);
+
+  --color-destructive: hsl(0 72% 50%);
+  --color-destructive-foreground: hsl(0 0% 100%);
+
+  --color-border: hsl(150 16% 90%);
+  --color-input: hsl(150 16% 92%);
+  --color-ring: hsl(123 55% 30%);
+
+  /* HSL-channel forms (used by .glass-card, hsl(var(--x)) consumers) */
+  --background: 0 0% 100%;
+  --foreground: 150 12% 12%;
+  --card: 0 0% 100%;
+  --primary: 123 55% 24%;
+  --primary-foreground: 0 0% 100%;
+  --primary-glow: 123 45% 40%;
+  --secondary: 123 40% 94%;
+  --secondary-foreground: 123 48% 22%;
+  --muted: 150 16% 96%;
+  --muted-foreground: 150 8% 42%;
+  --accent: 142 55% 42%;
+  --border: 150 16% 90%;
+  --input: 150 16% 92%;
+  --ring: 123 55% 30%;
+
+  /* Green gradients + glass for the ERP shell */
+  --gradient-hero: linear-gradient(135deg, hsl(123 55% 22%) 0%, hsl(142 50% 32%) 55%, hsl(150 45% 40%) 100%);
+  --gradient-warm: linear-gradient(180deg, hsl(150 30% 99%) 0%, hsl(140 28% 97%) 100%);
+  --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / .9), hsl(150 30% 98% / .7));
+  --gradient-glow: radial-gradient(circle at 30% 20%, hsl(142 55% 45% / .14), transparent 60%);
+
+  --shadow-soft: 0 4px 20px -6px hsl(150 40% 18% / .1);
+  --shadow-card: 0 10px 40px -12px hsl(150 40% 14% / .12);
+
+  --glass-bg: hsl(0 0% 100% / .7);
+  --glass-border: hsl(150 20% 92% / .7);
+
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.erp.dark {
+  --color-background: hsl(150 18% 8%);
+  --color-foreground: hsl(150 10% 94%);
+  --color-card: hsl(150 14% 12%);
+  --color-card-foreground: hsl(150 10% 94%);
+  --color-popover: hsl(150 14% 12%);
+  --color-popover-foreground: hsl(150 10% 94%);
+
+  --color-primary: hsl(123 48% 48%);
+  --color-primary-foreground: hsl(150 30% 8%);
+  --color-primary-glow: hsl(123 50% 55%);
+
+  --color-secondary: hsl(150 18% 18%);
+  --color-secondary-foreground: hsl(123 40% 88%);
+
+  --color-muted: hsl(150 14% 16%);
+  --color-muted-foreground: hsl(150 8% 62%);
+
+  --color-accent: hsl(142 50% 50%);
+  --color-accent-foreground: hsl(150 30% 8%);
+
+  --color-border: hsl(150 12% 22%);
+  --color-input: hsl(150 12% 22%);
+  --color-ring: hsl(123 48% 50%);
+
+  --background: 150 18% 8%;
+  --foreground: 150 10% 94%;
+  --card: 150 14% 12%;
+  --primary: 123 48% 48%;
+  --primary-foreground: 150 30% 8%;
+  --secondary: 150 18% 18%;
+  --secondary-foreground: 123 40% 88%;
+  --muted: 150 14% 16%;
+  --muted-foreground: 150 8% 62%;
+  --accent: 142 50% 50%;
+  --border: 150 12% 22%;
+  --input: 150 12% 22%;
+  --ring: 123 48% 50%;
+
+  --gradient-warm: linear-gradient(180deg, hsl(150 18% 9%) 0%, hsl(150 16% 7%) 100%);
+  --gradient-card: linear-gradient(145deg, hsl(150 14% 13% / .9), hsl(150 14% 11% / .7));
+  --gradient-glow: radial-gradient(circle at 30% 20%, hsl(142 55% 40% / .12), transparent 60%);
+
+  --shadow-soft: 0 4px 20px -6px hsl(0 0% 0% / .4);
+  --shadow-card: 0 10px 40px -12px hsl(0 0% 0% / .5);
+
+  --glass-bg: hsl(150 14% 13% / .7);
+  --glass-border: hsl(150 12% 24% / .6);
+
+  color-scheme: dark;
+}
+
+/* ERP focus ring + card surface helpers */
+.erp .erp-card {
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 1rem;
+  box-shadow: var(--shadow-soft);
+}
