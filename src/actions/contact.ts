@@ -46,7 +46,7 @@ export async function submitContactForm(
     try {
         await resend.emails.send({
             from: 'Talari Farms <noreply@talarifarms.co.in>',
-            to: 'raghu.veer12529@gmail.com',
+            to: 'raghuveer@talarifarms.co.in',
             subject: `New Inquiry from ${name} — ${requirement}`,
             html: `
                 <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e5e7eb; border-radius: 12px;">

@@ -515,7 +515,7 @@ function Contact() {
                             </div>
                             <div>
                                 <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Email Inquiry</p>
-                                <p className="text-base font-bold text-foreground">raghu.veer12529@gmail.com</p>
+                                <p className="text-base font-bold text-foreground">raghuveer@talarifarms.co.in</p>
                             </div>
                         </div>
                         {/* Phone */}
@@ -708,7 +708,7 @@ const jsonLd = {
             logo: 'https://www.talarifarms.co.in/logo-lovable.png',
             image: 'https://www.talarifarms.co.in/hero-gac-lovable.jpg',
             telephone: ['+919299659344', '+919603369074'],
-            email: 'raghu.veer12529@gmail.com',
+            email: 'raghuveer@talarifarms.co.in',
             address: {
                 '@type': 'PostalAddress',
                 addressLocality: 'Bukkapur',
