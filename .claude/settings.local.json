@@ -45,7 +45,16 @@
       "Bash(~/.nvm/versions/node/v20.20.0/bin/npx ts-node *)",
       "Bash(~/.nvm/versions/node/v20.20.0/bin/npx tsc *)",
       "Bash(~/.nvm/versions/node/v20.20.0/bin/npm run *)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(vercel --version)",
+      "Bash(npx prisma *)",
+      "Bash(kill 52639)",
+      "Bash(seq 1 20)",
+      "Bash(grep -qiE \"ready|started server|local:|http://localhost\" /private/tmp/claude-501/-Users-rtalari-Desktop-talari-farms/8ecb8fba-147c-401b-8bb8-cef0f78e26b9/tasks/b2buj5fvq.output)",
+      "Bash(break)",
+      "Bash(sleep 1)",
+      "Bash(cat /private/tmp/claude-501/-Users-rtalari-Desktop-talari-farms/8ecb8fba-147c-401b-8bb8-cef0f78e26b9/tasks/b2buj5fvq.output)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/app)"
     ]
   }
 }

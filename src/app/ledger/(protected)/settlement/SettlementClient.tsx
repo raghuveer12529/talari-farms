@@ -79,8 +79,11 @@ export default function SettlementClient({ entries, loans, partners }: Props) {
     const totalIncome = filtered.filter((e) => e.type === 'INCOME').reduce((s, e) => s + e.amount, 0);
     const totalOwnPocket = filtered.filter((e) => e.type === 'EXPENDITURE' && e.source === 'OWN_POCKET').reduce((s, e) => s + e.amount, 0);
     const totalLoanFunded = filtered.filter((e) => e.type === 'EXPENDITURE' && e.source === 'LOAN_FUNDS').reduce((s, e) => s + e.amount, 0);
+    const totalFarmIncomeSpent = filtered.filter((e) => e.type === 'EXPENDITURE' && e.source === 'FARM_INCOME').reduce((s, e) => s + e.amount, 0);
     const equalShare = totalOwnPocket / (partners.length || 1);
-    const incomeShare = totalIncome / (partners.length || 1);
+    // Income the farm spent on itself is no longer distributable.
+    const distributableIncome = totalIncome - totalFarmIncomeSpent;
+    const incomeShare = distributableIncome / (partners.length || 1);
 
     const totalLoaned = loans.reduce((s, l) => s + l.amount, 0);
     const totalRepaid = loans.flatMap((l) => l.repayments).reduce((s, r) => s + r.amount, 0);
@@ -98,7 +101,7 @@ export default function SettlementClient({ entries, loans, partners }: Props) {
 
     return {
       filteredEntries: filtered,
-      stats: { totalIncome, totalOwnPocket, totalLoanFunded, equalShare, incomeShare, loanOutstanding, loanSharePerPartner, partnerStats },
+      stats: { totalIncome, totalOwnPocket, totalLoanFunded, totalFarmIncomeSpent, distributableIncome, equalShare, incomeShare, loanOutstanding, loanSharePerPartner, partnerStats },
     };
   }, [entries, loans, partners, period]);
 
@@ -137,7 +140,9 @@ export default function SettlementClient({ entries, loans, partners }: Props) {
             <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Total Income</span>
           </div>
           <p className="font-display text-xl font-bold text-green-600">{fmt(stats.totalIncome)}</p>
-          <p className="text-[11px] text-muted-foreground mt-1">{fmt(stats.incomeShare)} per partner</p>
+          <p className="text-[11px] text-muted-foreground mt-1">
+            {fmt(stats.incomeShare)} per partner{stats.totalFarmIncomeSpent > 0 ? ' after farm spending' : ''}
+          </p>
         </div>
 
         <div className="glass-card rounded-2xl p-5">
@@ -152,10 +157,13 @@ export default function SettlementClient({ entries, loans, partners }: Props) {
         <div className="glass-card rounded-2xl p-5">
           <div className="flex items-center gap-2 mb-2">
             <Landmark size={14} className="text-primary" />
-            <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Loan Funded</span>
+            <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Spent From Income</span>
           </div>
-          <p className="font-display text-xl font-bold text-primary">{fmt(stats.totalLoanFunded)}</p>
-          <p className="text-[11px] text-muted-foreground mt-1">From loan pool</p>
+          <p className="font-display text-xl font-bold text-primary">{fmt(stats.totalFarmIncomeSpent)}</p>
+          <p className="text-[11px] text-muted-foreground mt-1">
+            {fmt(stats.distributableIncome)} left to distribute
+            {stats.totalLoanFunded > 0 ? ` · ${fmt(stats.totalLoanFunded)} legacy loan-funded` : ''}
+          </p>
         </div>
 
         <div className="glass-card rounded-2xl p-5">
@@ -212,7 +220,7 @@ export default function SettlementClient({ entries, loans, partners }: Props) {
                 <div className="bg-green-50 rounded-xl p-3">
                   <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Income Share</p>
                   <p className="font-bold text-green-700">{fmt(p.incomeShare)}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">1/3 of income</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5">1/3 of distributable</p>
                 </div>
                 <div className="bg-red-50 rounded-xl p-3">
                   <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">Loan Liability</p>

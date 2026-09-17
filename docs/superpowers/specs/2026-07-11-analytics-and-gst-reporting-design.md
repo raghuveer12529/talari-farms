@@ -95,10 +95,12 @@ client-side money math.
 
 ### 3. GSTR-1 report & exports
 
-**`src/app/app/reports/gst/page.tsx`** — filing view for one **return period**
-(month picker, defaults to last month, since GSTR-1 is monthly). Reads seller
-GSTIN + state code from `CompanySettings`, fetches the month's non-cancelled
-invoices, runs the builder.
+**`src/app/app/reports/gst/page.tsx`** — filing view for one **return period**.
+Talari Farms is on the **QRMP (quarterly) scheme**, so the period is a
+**GST quarter** (Apr–Jun / Jul–Sep / Oct–Dec / Jan–Mar), picked via a quarter
+selector defaulting to the current/most-recent quarter. Reads seller GSTIN +
+state code from `CompanySettings`, fetches the quarter's non-cancelled invoices,
+runs the builder.
 
 **`src/lib/gst-return.ts`** (pure, unit-tested) → `Gstr1Return` with sections:
 - **B2B** — customers with a GSTIN; grouped by counterparty GSTIN → invoices →
@@ -121,8 +123,9 @@ present, else mapped from `placeOfSupply` via a new `src/lib/gst-states.ts`
 **Exports:**
 1. **CSV** — one download per section (B2B, B2CS, HSN, docs) via `csv.ts`.
 2. **GSTR-1 JSON** — `src/lib/gstr1-json.ts` serializes `Gstr1Return` into the
-   government offline-tool schema (`gstin`, `fp` = `MMYYYY`, `b2b`, `b2cs`,
-   `b2cl`, `hsn`, `doc_issue`). Served via
+   government offline-tool schema (`gstin`, `fp`, `b2b`, `b2cs`, `b2cl`, `hsn`,
+   `doc_issue`). Under QRMP the return period `fp` is the **last month of the
+   quarter** in `MMYYYY` form (e.g. Apr–Jun quarter → `fp = 062026`). Served via
    `src/app/app/reports/gst/export/route.ts` as a downloadable `.json`.
 
 **Correctness guardrail:** all tax figures come from the persisted per-item

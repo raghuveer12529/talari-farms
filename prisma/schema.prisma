@@ -24,6 +24,9 @@ enum EntryType {
 
 enum FundSource {
   OWN_POCKET
+  FARM_INCOME
+  /// Retired: kept so historical entries keep their true source. New entries
+  /// cannot use it — a loan is a liability, not a spendable pool.
   LOAN_FUNDS
 }
 
@@ -58,7 +61,8 @@ model User {
   role         Role     @default(PARTNER)
   createdAt    DateTime @default(now())
 
-  ledgerEntries  LedgerEntry[]
+  ledgerEntries  LedgerEntry[]   @relation("EntryPartner")
+  recordedEntries LedgerEntry[]  @relation("EntryRecorder")
   loanRepayments LoanRepayment[]
 
   invoices Invoice[]
@@ -106,7 +110,7 @@ model VerificationToken {
 
 model Loan {
   id          String   @id @default(cuid())
-  amount      Float
+  amount      Decimal  @db.Decimal(12, 2)
   source      String
   description String?
   date        DateTime
@@ -119,7 +123,7 @@ model Loan {
 model LoanRepayment {
   id        String   @id @default(cuid())
   loanId    String
-  amount    Float
+  amount    Decimal  @db.Decimal(12, 2)
   date      DateTime
   notes     String?
   paidById  String
@@ -132,16 +136,23 @@ model LoanRepayment {
 model LedgerEntry {
   id          String      @id @default(cuid())
   type        EntryType
-  amount      Float
+  amount      Decimal     @db.Decimal(12, 2)
   category    String
   date        DateTime
   source      FundSource?
   notes       String?
   receiptUrl  String?
+  /// The partner whose money this is — drives own-pocket capital in settlement.
   partnerId   String
+  /// Who actually entered it. Null on legacy rows, which were self-recorded.
+  recordedById String?
   createdAt   DateTime    @default(now())
 
-  partner User @relation(fields: [partnerId], references: [id])
+  partner    User  @relation("EntryPartner", fields: [partnerId], references: [id])
+  recordedBy User? @relation("EntryRecorder", fields: [recordedById], references: [id])
+
+  @@index([partnerId])
+  @@index([recordedById])
 }
 
 // ───────────────────────────── ERP ─────────────────────────────

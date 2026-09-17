@@ -4,6 +4,7 @@ import { AddLoanForm, AddRepaymentForm } from '@/components/ledger/LoanForm';
 import DeleteButton from '@/components/ledger/DeleteButton';
 import { deleteLoan, deleteRepayment } from '@/actions/loans';
 import { Landmark, CheckCircle2 } from 'lucide-react';
+import { toPlainAmount } from '@/lib/serialize';
 
 function fmt(n: number) {
   return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n);
@@ -14,10 +15,11 @@ export default async function LoansPage() {
   const role = (session!.user as { role: string }).role;
   const isAdmin = role === 'ADMIN';
 
-  const loans = await prisma.loan.findMany({
+  const loanRows = await prisma.loan.findMany({
     include: { repayments: { include: { paidBy: true }, orderBy: { date: 'desc' } } },
     orderBy: { date: 'desc' },
   });
+  const loans = loanRows.map((l) => ({ ...toPlainAmount(l), repayments: l.repayments.map(toPlainAmount) }));
 
   const totalLoaned = loans.reduce((s, l) => s + l.amount, 0);
   const totalRepaid = loans.flatMap((l) => l.repayments).reduce((s, r) => s + r.amount, 0);

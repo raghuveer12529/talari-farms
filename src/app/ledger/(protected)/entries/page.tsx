@@ -3,6 +3,9 @@ import { prisma } from '@/lib/prisma';
 import EntryForm from '@/components/ledger/EntryForm';
 import DeleteButton from '@/components/ledger/DeleteButton';
 import { deleteLedgerEntry } from '@/actions/ledger';
+import { toPlainAmount } from '@/lib/serialize';
+import { FUND_SOURCE_LABELS, FUND_SOURCE_STYLES } from '@/lib/ledger-schemas';
+import { canDeleteEntry } from '@/lib/ledger-auth';
 
 function fmt(n: number) {
   return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n);
@@ -16,10 +19,18 @@ export default async function EntriesPage() {
   const session = await auth();
   const role = (session!.user as { role: string }).role;
 
-  const entries = await prisma.ledgerEntry.findMany({
-    include: { partner: true },
-    orderBy: { date: 'desc' },
-  });
+  const [rows, partners] = await Promise.all([
+    prisma.ledgerEntry.findMany({
+      include: { partner: true, recordedBy: { select: { id: true, name: true } } },
+      orderBy: { date: 'desc' },
+    }),
+    prisma.user.findMany({
+      where: { role: { in: ['ADMIN', 'PARTNER'] } },
+      select: { id: true, name: true },
+      orderBy: { createdAt: 'asc' },
+    }),
+  ]);
+  const entries = rows.map(toPlainAmount);
 
   const totalIncome = entries.filter((e) => e.type === 'INCOME').reduce((s, e) => s + e.amount, 0);
   const totalExpenditure = entries.filter((e) => e.type === 'EXPENDITURE').reduce((s, e) => s + e.amount, 0);
@@ -34,7 +45,7 @@ export default async function EntriesPage() {
             Income & <span className="gradient-text">Expenditure</span>
           </h1>
         </div>
-        <EntryForm />
+        <EntryForm partners={partners} currentUserId={session!.user.id} />
       </div>
 
       {/* Totals */}
@@ -92,11 +103,18 @@ export default async function EntriesPage() {
                       <p className="font-semibold text-foreground">{formatCategory(e.category)}</p>
                       {e.notes && <p className="text-[11px] text-muted-foreground mt-0.5 truncate max-w-[160px]">{e.notes}</p>}
                     </td>
-                    <td className="px-5 py-3.5 text-foreground font-medium">{e.partner.name}</td>
+                    <td className="px-5 py-3.5 text-foreground font-medium">
+                      {e.partner.name}
+                      {e.recordedById && e.recordedById !== e.partnerId && (
+                        <p className="text-[11px] text-muted-foreground mt-0.5">
+                          entered by {e.recordedBy?.name ?? 'another partner'}
+                        </p>
+                      )}
+                    </td>
                     <td className="px-5 py-3.5">
                       {e.source ? (
-                        <span className={`text-[11px] font-semibold ${e.source === 'OWN_POCKET' ? 'text-blue-600' : 'text-primary'}`}>
-                          {e.source === 'OWN_POCKET' ? 'Own Pocket' : 'Loan Funds'}
+                        <span className={`text-[11px] font-semibold ${FUND_SOURCE_STYLES[e.source]}`}>
+                          {FUND_SOURCE_LABELS[e.source]}
                         </span>
                       ) : (
                         <span className="text-muted-foreground text-[11px]">—</span>
@@ -106,12 +124,12 @@ export default async function EntriesPage() {
                       {e.type === 'INCOME' ? '+' : '-'}{fmt(e.amount)}
                     </td>
                     <td className="px-5 py-3.5 text-right">
-                      {(role === 'ADMIN' || e.partnerId === session!.user.id) && (
+                      {canDeleteEntry({ id: session!.user.id, role }, e) && (
                         <DeleteButton
                           label="entry"
                           action={async () => {
                             'use server';
-                            await deleteLedgerEntry(e.id);
+                            return deleteLedgerEntry(e.id);
                           }}
                         />
                       )}

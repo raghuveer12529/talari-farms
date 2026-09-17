@@ -17,12 +17,12 @@ export function AddLoanForm() {
     setError('');
     const data = new FormData(e.currentTarget);
     startTransition(async () => {
-      try {
-        await createLoan(data);
-        setOpen(false);
-      } catch (err) {
-        setError((err as Error).message);
+      const result = await createLoan(data);
+      if (!result.ok) {
+        setError(result.error);
+        return;
       }
+      setOpen(false);
     });
   }
 
@@ -93,12 +93,12 @@ export function AddRepaymentForm({ loanId, loanSource }: { loanId: string; loanS
     const data = new FormData(e.currentTarget);
     data.set('loanId', loanId);
     startTransition(async () => {
-      try {
-        await createRepayment(data);
-        setOpen(false);
-      } catch (err) {
-        setError((err as Error).message);
+      const result = await createRepayment(data);
+      if (!result.ok) {
+        setError(result.error);
+        return;
       }
+      setOpen(false);
     });
   }
 

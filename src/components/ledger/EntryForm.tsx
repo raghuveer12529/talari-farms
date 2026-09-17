@@ -14,10 +14,22 @@ function formatCategoryLabel(cat: string) {
   return cat.replace(/_/g, ' ');
 }
 
-export default function EntryForm() {
+export interface LedgerPartner {
+  id: string;
+  name: string;
+}
+
+export default function EntryForm({
+  partners = [],
+  currentUserId,
+}: {
+  partners?: LedgerPartner[];
+  currentUserId?: string;
+}) {
   const [open, setOpen] = useState(false);
   const [type, setType] = useState<'INCOME' | 'EXPENDITURE'>('EXPENDITURE');
   const [category, setCategory] = useState('');
+  const [source, setSource] = useState('');
   const [error, setError] = useState('');
   const [pending, startTransition] = useTransition();
 
@@ -26,6 +38,7 @@ export default function EntryForm() {
   function handleTypeChange(newType: 'INCOME' | 'EXPENDITURE') {
     setType(newType);
     setCategory('');
+    setSource('');
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -34,15 +47,16 @@ export default function EntryForm() {
     const data = new FormData(e.currentTarget);
 
     startTransition(async () => {
-      try {
-        await createLedgerEntry(data);
-        setOpen(false);
-        setCategory('');
-        setType('EXPENDITURE');
-        (e.target as HTMLFormElement).reset();
-      } catch (err) {
-        setError((err as Error).message);
+      const result = await createLedgerEntry(data);
+      if (!result.ok) {
+        setError(result.error);
+        return;
       }
+      setOpen(false);
+      setCategory('');
+      setSource('');
+      setType('EXPENDITURE');
+      (e.target as HTMLFormElement).reset();
     });
   }
 
@@ -114,11 +128,35 @@ export default function EntryForm() {
               {type === 'EXPENDITURE' && (
                 <div className="space-y-1.5">
                   <label className="text-sm font-bold text-foreground">Funded From *</label>
-                  <select name="source" required className={INPUT}>
+                  <select
+                    name="source"
+                    required
+                    value={source}
+                    onChange={(e) => setSource(e.target.value)}
+                    className={INPUT}
+                  >
                     <option value="" disabled>Select source…</option>
-                    <option value="OWN_POCKET">Own Pocket (adds to my capital)</option>
-                    <option value="LOAN_FUNDS">Loan Funds</option>
+                    <option value="OWN_POCKET">Own Pocket (adds to capital)</option>
+                    <option value="FARM_INCOME">Farm Income (money in the bank)</option>
                   </select>
+                </div>
+              )}
+
+              {/* Paid by — only for own-pocket spending, where attribution
+                  decides whose capital this counts as. */}
+              {type === 'EXPENDITURE' && source === 'OWN_POCKET' && partners.length > 0 && (
+                <div className="space-y-1.5">
+                  <label className="text-sm font-bold text-foreground">Paid By *</label>
+                  <select name="paidById" defaultValue={currentUserId ?? ''} className={INPUT}>
+                    {partners.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.id === currentUserId ? `${p.name} (me)` : p.name}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-[11px] text-muted-foreground">
+                    Recording for a partner who is busy? Pick them here — the capital counts as theirs.
+                  </p>
                 </div>
               )}
 

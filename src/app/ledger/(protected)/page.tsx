@@ -1,5 +1,6 @@
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
+import { toPlainAmount } from '@/lib/serialize';
 import { TrendingUp, TrendingDown, Landmark, Wallet, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
 function fmt(n: number) {
@@ -14,11 +15,14 @@ export default async function LedgerDashboard() {
   const session = await auth();
   const userId = session!.user.id;
 
-  const [entries, loans, partners] = await Promise.all([
+  const [entryRows, loanRows, partners] = await Promise.all([
     prisma.ledgerEntry.findMany({ include: { partner: true }, orderBy: { date: 'desc' } }),
     prisma.loan.findMany({ include: { repayments: true }, orderBy: { date: 'desc' } }),
     prisma.user.findMany({ select: { id: true, name: true, role: true } }),
   ]);
+
+  const entries = entryRows.map(toPlainAmount);
+  const loans = loanRows.map((l) => ({ ...toPlainAmount(l), repayments: l.repayments.map(toPlainAmount) }));
 
   const totalIncome = entries.filter((e) => e.type === 'INCOME').reduce((s, e) => s + e.amount, 0);
   const totalExpenditure = entries.filter((e) => e.type === 'EXPENDITURE').reduce((s, e) => s + e.amount, 0);
