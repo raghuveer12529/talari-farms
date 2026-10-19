@@ -573,10 +573,16 @@ function Contact() {
                                     </div>
                                 </div>
 
-                                {/* Email */}
-                                <div className="space-y-2">
-                                    <label htmlFor="email" className="text-sm font-bold text-foreground">Email *</label>
-                                    <input id="email" name="email" required type="email" placeholder="you@company.com" className={INPUT_CLASS} />
+                                {/* Email + Phone */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                    <div className="space-y-2">
+                                        <label htmlFor="email" className="text-sm font-bold text-foreground">Email *</label>
+                                        <input id="email" name="email" required type="email" placeholder="you@company.com" className={INPUT_CLASS} />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label htmlFor="phone" className="text-sm font-bold text-foreground">Phone / WhatsApp *</label>
+                                        <input id="phone" name="phone" required type="tel" autoComplete="tel" placeholder="+91 98765 43210" className={INPUT_CLASS} />
+                                    </div>
                                 </div>
 
                                 {/* Requirement (select) */}
