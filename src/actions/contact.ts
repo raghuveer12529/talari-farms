@@ -23,6 +23,7 @@ export async function submitContactForm(
 ): Promise<ContactFormState> {
     const name = (formData.get('name') as string)?.trim();
     const email = (formData.get('email') as string)?.trim();
+    const phone = (formData.get('phone') as string)?.trim();
     const company = (formData.get('company') as string)?.trim();
     const requirement = (formData.get('requirement') as string)?.trim();
     const quantity = (formData.get('quantity') as string)?.trim();
@@ -33,6 +34,10 @@ export async function submitContactForm(
     }
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         return { status: 'error', error: 'Please enter a valid email address.' };
+    }
+    const phoneDigits = phone?.replace(/\D/g, '') ?? '';
+    if (!phone || !/^[+\d\s()-]+$/.test(phone) || phoneDigits.length < 7 || phoneDigits.length > 15) {
+        return { status: 'error', error: 'Please enter a valid phone number.' };
     }
     if (!requirement || !REQUIREMENT_OPTIONS.includes(requirement as RequirementOption)) {
         return { status: 'error', error: 'Please select a product requirement.' };
@@ -60,6 +65,10 @@ export async function submitContactForm(
                         <tr>
                             <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; font-weight: 600; color: #374151;">Email</td>
                             <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; color: #111827;"><a href="mailto:${email}" style="color: #2d6a2d;">${email}</a></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; font-weight: 600; color: #374151;">Phone</td>
+                            <td style="padding: 10px 0; border-bottom: 1px solid #f3f4f6; color: #111827;"><a href="tel:${phone.replace(/[^\d+]/g, '')}" style="color: #2d6a2d;">${phone}</a></td>
                         </tr>
                         ${company ? `
                         <tr>
